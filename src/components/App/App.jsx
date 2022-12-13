@@ -7,7 +7,7 @@ class App extends Component {
     inputValue: 'qwe',
   };
   handleInputChange = e => {
-    console.log(e);
+    console.log(e.currentTarget.value);
   };
   formSubmitHandler = data => {
     console.log(data);
