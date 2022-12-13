@@ -1,8 +1,11 @@
-import React from 'react';
+import { nanoid } from 'nanoid';
+import { Notify } from 'notiflix';
 
 import { Component } from 'react';
 import { Container, PageTitle, PageContact } from './App.styled';
-import ContactForm from 'components/ContactForm/ContactForm';
+import ContactForm from '../ContactForm/ContactForm';
+import ContactList from '../ContactList/ContactList';
+import Filter from '../Filter/Filter';
 
 // import ContactForm from 'components/ContactForm/ContactForm';
 class App extends Component {
@@ -16,19 +19,74 @@ class App extends Component {
     filter: '',
   };
 
-  handleInputChange = e => {
-    console.log(e.currentTarget.value);
-    this.setState({});
+  addNewContact = (name, number) => {
+    const { contacts } = this.state;
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+
+    const isNameAdded = contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    const isNumberAdded = contacts.some(contact => contact.number === number);
+
+    if (isNameAdded) {
+      Notify.failure(`${name} is alredy in contacts`);
+      return false;
+    } else if (isNumberAdded) {
+      Notify.failure(`${number} is alredy in contacts`);
+      return false;
+    }
+
+    this.setState(({ contacts }) => ({
+      contacts: [newContact, ...contacts],
+    }));
+
+    return true;
   };
-  formSubmitHandler = data => {
-    console.log(data);
+  onChangeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
   };
+
+  deleteContact = idItem => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(constact => constact.id !== idItem),
+    }));
+  };
+
+  getVisibleContacts = () => {
+    const { filter, contacts } = this.state;
+
+    const normalizeFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizeFilter)
+    );
+  };
+
   render() {
+    const { filter, contacts } = this.state;
+    const visibleContacts = this.getVisibleContacts();
     return (
       <Container>
         <PageTitle>Phonebook</PageTitle>
         <ContactForm onSubmit={this.addNewContact} />
         <PageContact>Contacts</PageContact>
+        {contacts.length > 1 && (
+          <Filter value={filter} onChange={this.onChangeFilter} />
+        )}
+
+        {contacts.length > 0 ? (
+          <ContactList
+            contacts={visibleContacts}
+            onDeleteContact={this.deleteContact}
+          />
+        ) : (
+          <text>Your phonebook is empty. Please add contact.</text>
+        )}
       </Container>
     );
   }

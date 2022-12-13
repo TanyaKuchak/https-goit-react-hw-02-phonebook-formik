@@ -8,8 +8,13 @@ export const Container = styled.div`
 export const PageTitle = styled.h1`
   text-align: center;
   margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 600px;
 `;
 
 export const PageContact = styled.h2`
   text-align: center;
+  margin-top: 30px;
+  font-size: 32px;
+  font-weight: 600px;
 `;

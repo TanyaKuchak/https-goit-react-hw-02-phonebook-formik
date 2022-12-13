@@ -18,11 +18,13 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   width: 350px;
+  /* height: 40px; */
   background-color: #f1f4f6;
   font-size: 16px;
   font-weight: 600;
   border-radius: 5px;
-  border: 1px solid rgba(33, 33, 33, 0.2);
+  padding: 10px;
+
   :hover,
   :focus {
     background-color: #e4ffc0;
